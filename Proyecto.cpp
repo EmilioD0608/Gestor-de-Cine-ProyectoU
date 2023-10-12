@@ -15,6 +15,7 @@ using namespace std;
 
 
 int menu_principal();
+void operaciones_pr(int op);
 //4. Zona para la funcion principal
 
 int main() {
@@ -23,7 +24,7 @@ int main() {
 	do{
 		system("cls");
 		op = menu_principal();
-		//operaciones(op);
+		operaciones_pr(op);
 		cout<<"Desea realizar otra operacion si(1): ";
 		cin>>op;  
 	}while(op==1);
@@ -60,6 +61,31 @@ int menu_principal(){
 	
 }
 
+void operaciones_pr(int op){
+	
+	switch(op){
+		case 1: //registrar cinw
+			break;
+		case 2: //Registrar Salas
+			break;
+		case 3: // registrar sesiones
+			break;
+		case 4: //registra pelicula
+			break;
+		case 5: //visualizar informacion de una sala concreta
+			break;
+		case 6: //Buscar película
+			break;
+		case 7: //Modificar una pelicula de una sala concreta
+			break;
+		case 8: //Listar las peliculas por edades
+			break;
+		case 9: // listar carteleras de todos los cines
+			break;
+		case 10: //salir del programa
+			break;
+	}
+}
 
 
 
