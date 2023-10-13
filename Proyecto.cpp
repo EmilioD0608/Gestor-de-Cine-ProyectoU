@@ -8,23 +8,36 @@ using namespace std;
 
 //2. Zona para constantes y variables globales
 
-
+struct Sesion{
+	
+	int numero;
+	string hora;
+	string dia;
+	
+	Sesion * ant;
+	Sesion * sig;
+};
 
 
 //3. Zona para definir las funciones
 
 
 int menu_principal();
-void operaciones_pr(int op);
+void operaciones_pr(int op ,Sesion *& pcabSesion, Sesion *&pfinSesion);
+void Registrar_Sesion(Sesion *& pcab, Sesion *&pfin);
 //4. Zona para la funcion principal
 
 int main() {
+	
+	Sesion * pcabSesion = NULL;
+	Sesion * pfinSesion = NULL;
+	
 	setlocale(LC_CTYPE,"Spanish");
 	int op;
 	do{
 		system("cls");
 		op = menu_principal();
-		operaciones_pr(op);
+		operaciones_pr(op, pcabSesion, pfinSesion);
 		cout<<"Desea realizar otra operacion si(1): ";
 		cin>>op;  
 	}while(op==1);
@@ -61,14 +74,16 @@ int menu_principal(){
 	
 }
 
-void operaciones_pr(int op){
+void operaciones_pr(int op ,Sesion *& pcabSesion, Sesion *&pfinSesion){
 	
 	switch(op){
-		case 1: //registrar cinw
+		case 1: //registrar cine
+			
 			break;
 		case 2: //Registrar Salas
 			break;
 		case 3: // registrar sesiones
+			Registrar_Sesion(pcabSesion, pfinSesion);
 			break;
 		case 4: //registra pelicula
 			break;
@@ -89,9 +104,37 @@ void operaciones_pr(int op){
 
 
 
+void Registrar_Sesion(Sesion *& pcab, Sesion *&pfin){
+	Sesion * nuevaSesion = new(Sesion);
+	cout<<"Ingrese el número de sesion: "; cin>> nuevaSesion->numero;
+	cout<<"Ingrese la hora de la sesion: "; 
+	cin.ignore();
+	getline(cin, nuevaSesion->dia);
+
+	cout<<"Ingrese el dia de la sesion: "; cin>> nuevaSesion->dia;
+	
+	nuevaSesion -> ant = NULL;
+	nuevaSesion -> sig = NULL;
+	
+	if (pcab == NULL){
+		pcab = nuevaSesion;
+	}else{
+		nuevaSesion -> ant = pfin;
+		pfin->sig = nuevaSesion;
+	}
+	
+	pfin= nuevaSesion;
+}
 
 
-
+/*
+int numero;
+	string hora;
+	string dia;
+	
+	Sesion * ant;
+	Sesion * sig;
+*/
 
 
 
