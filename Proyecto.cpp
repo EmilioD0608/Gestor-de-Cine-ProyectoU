@@ -6,7 +6,33 @@
 #include<stdio.h>
 using namespace std;
 
+// ---------- IMPLEMENTACIONES EXTRA ---------
+string trim(string str) {
+    size_t first = str.find_first_not_of(' ');
+    if (string::npos == first) {
+        return str;
+    }
+    size_t last = str.find_last_not_of(' ');
+    return str.substr(first, (last - first + 1));
+}
+
+
 //2. Zona para constantes y variables globales
+// structs
+
+struct Cine {
+    string Nombre;
+    int Salas;
+    Cine* ant;
+    Cine* sig;
+};
+
+struct Sala {
+    string Nombre;
+    int Sesiones;
+    struct Sala *ant;
+    struct Sala *sig;
+};
 
 struct Sesion{
 	
@@ -23,21 +49,30 @@ struct Sesion{
 
 
 int menu_principal();
-void operaciones_pr(int op ,Sesion *& pcabSesion, Sesion *&pfinSesion);
-void Registrar_Sesion(Sesion *& pcab, Sesion *&pfin);
+void operaciones_pr(int op ,Sesion *& pcabSesion, Sesion *&pfinSesion, Sala*&pcabSala, Sala *&pfinSala);
+void Registrar_Sesion(Sala * pcabsala, Sesion *& pcab, Sesion *&pfin, string nombre_sala);
+Sala *buscar_sala( Sala *inicio, string nombre);
+void crear_sala(Sala*&pcabsala, Sala*&pfinsala);
 //4. Zona para la funcion principal
+
+
+
 
 int main() {
 	
+	Sala * pcabSala = NULL;
+	Sala * pfinSala = NULL;
 	Sesion * pcabSesion = NULL;
 	Sesion * pfinSesion = NULL;
+	
+	
 	
 	setlocale(LC_CTYPE,"Spanish");
 	int op;
 	do{
 		system("cls");
 		op = menu_principal();
-		operaciones_pr(op, pcabSesion, pfinSesion);
+		operaciones_pr(op, pcabSesion, pfinSesion, pcabSala, pfinSala);
 		cout<<"Desea realizar otra operacion si(1): ";
 		cin>>op;  
 	}while(op==1);
@@ -74,16 +109,19 @@ int menu_principal(){
 	
 }
 
-void operaciones_pr(int op ,Sesion *& pcabSesion, Sesion *&pfinSesion){
-	
+void operaciones_pr(int op ,Sesion *& pcabSesion, Sesion *&pfinSesion, Sala*&pcabSala, Sala *&pfinSala){
+	string nombre;
 	switch(op){
 		case 1: //registrar cine
 			
 			break;
 		case 2: //Registrar Salas
+		crear_sala(pcabSala, pfinSala);
 			break;
 		case 3: // registrar sesiones
-			Registrar_Sesion(pcabSesion, pfinSesion);
+			cout<<"Inggrese el nombre de la sala la que pertenece la sesion";;
+			cin>>nombre;
+			Registrar_Sesion(pcabSala, pcabSesion, pfinSesion,nombre);
 			break;
 		case 4: //registra pelicula
 			break;
@@ -103,27 +141,87 @@ void operaciones_pr(int op ,Sesion *& pcabSesion, Sesion *&pfinSesion){
 }
 
 
+// -------------------- CINE --------------------------
 
-void Registrar_Sesion(Sesion *& pcab, Sesion *&pfin){
-	Sesion * nuevaSesion = new(Sesion);
-	cout<<"Ingrese el número de sesion: "; cin>> nuevaSesion->numero;
-	cout<<"Ingrese la hora de la sesion: "; 
-	cin.ignore();
-	getline(cin, nuevaSesion->dia);
+// ------------------SALA -------------------------------
 
-	cout<<"Ingrese el dia de la sesion: "; cin>> nuevaSesion->dia;
+void crear_sala(Sala*&pcabsala, Sala*&pfinsala){
+	Sala * nuevaSala = new(Sala);
+	nuevaSala->Sesiones = 0;
+	string nombre;
+    printf("Ingrese el nombre de la nueva sala:\n");
+    cin.ignore(); // Ignorar el salto de línea anterior
+    getline(cin, nombre); // Leer el nombre completo de la sala
+    string nombre_trim = trim(nombre); // Eliminar los espacios en blanco al principio y al final
+	nuevaSala->Nombre = nombre_trim;
 	
-	nuevaSesion -> ant = NULL;
-	nuevaSesion -> sig = NULL;
+	nuevaSala -> ant = NULL;
+	nuevaSala -> sig = NULL;
 	
-	if (pcab == NULL){
-		pcab = nuevaSesion;
+	if (pcabsala == NULL){
+		pcabsala = nuevaSala;
 	}else{
-		nuevaSesion -> ant = pfin;
-		pfin->sig = nuevaSesion;
+		nuevaSala -> ant = pfinsala;
+		pfinsala ->sig = nuevaSala;
 	}
 	
-	pfin= nuevaSesion;
+	pfinsala= nuevaSala;
+	
+	cout<<nuevaSala<<endl;
+	cout<<nuevaSala->Nombre<<endl;
+	cout<<nuevaSala->ant<<endl;
+	cout<<nuevaSala->sig<<endl;
+	
+	
+}
+
+
+Sala *buscar_sala(Sala *inicio, string nombre) {
+	Sala *actual = inicio;
+    while (actual != NULL) {// de no existir un sala existente se continua y registra
+        if (actual->Nombre.compare(nombre) == 0) {
+            return actual;
+        }
+        actual = actual->sig;
+    }
+    return NULL;
+}
+
+
+// --------------- SESION ----------------------------
+
+
+void Registrar_Sesion(Sala * pcabsala, Sesion *& pcab, Sesion *&pfin, string nombre_sala){
+	
+	Sala * salaAct = buscar_sala(pcabsala, nombre_sala);
+	if(salaAct != NULL){
+		Sesion * nuevaSesion = new(Sesion);
+		cout<<"Ingrese el número de sesion: "; cin>> nuevaSesion->numero;
+		cout<<"Ingrese la hora de la sesion: "; 
+		cin.ignore();
+		getline(cin, nuevaSesion->dia);
+	
+		cout<<"Ingrese el dia de la sesion: "; cin>> nuevaSesion->dia;
+		
+		nuevaSesion -> ant = NULL;
+		nuevaSesion -> sig = NULL;
+		
+		if (pcab == NULL){
+			pcab = nuevaSesion;
+		}else{
+			nuevaSesion -> ant = pfin;
+			pfin->sig = nuevaSesion;
+		}
+		
+		pfin= nuevaSesion;
+		cout<<nuevaSesion<<endl;
+		cout<<nuevaSesion->numero<<endl;
+		cout<<nuevaSesion->ant<<endl;
+		cout<<nuevaSesion->sig<<endl;
+	}else{
+		cout<<"Esta sala no existe";
+	}
+
 }
 
 
