@@ -60,6 +60,8 @@ struct Sala {
     bool Horario3;
     bool Horario4;
     
+    Pelicula * PeliSala;
+    
     Sesion * pcabSe;
     Sesion * pfinSe;
     
@@ -87,7 +89,7 @@ struct Cine {
 
 
 int menu_principal();
-void operaciones_pr(int op , Cine *&pcabCine, Cine *& pfinCine,Sesion *& pcabSesion, Sesion *&pfinSesion, Sala*&pcabSala, Sala *&pfinSala);
+void operaciones_pr(int op , Cine *&pcabCine, Cine *& pfinCine,Sesion *& pcabSesion, Sesion *&pfinSesion, Sala*&pcabSala, Sala *&pfinSala,Pelicula *& pcabPelicula,Pelicula * &pfinPelicula);
 void Registrar_Sesion(Sala * pcabsala, Sesion *& pcab, Sesion *&pfin, int numero_sala,Cine *&pcabCine, Cine *& pfinCine);
 Sala *buscar_sala( Sala *inicio, int num);
 void crear_sala(Sala*&pcabsala, Sala*&pfinsala,Cine*pcabcine);
@@ -96,7 +98,10 @@ void RegistrarCine(Cine*&pcab, Cine*&pfin);
 void fun_listar(Cine *pcabProd);
 bool verificar_Cine(string nombre, Cine *pcab);
 bool verificar_Sala(int num, Sala *pcab);
-void Seleccion_Horario(Sala * salaAct);
+void Seleccion_Horario(Sala * salaAct,Sesion * sesionAct);
+void Registrar_Pelicula(Pelicula *&pcabP,Pelicula *&pfinP,Cine * pcabCine);
+Pelicula *Buscar_Pelicula(string datobuscar,Pelicula *pcab);
+bool verificar_Peli(string nombre, Pelicula *pcab);
 //4. Zona para la funcion principal
 
 
@@ -109,7 +114,8 @@ int main() {
 	Sala * pfinSala = NULL;
 	Sesion * pcabSesion = NULL;
 	Sesion * pfinSesion = NULL;
-
+	Pelicula * pcabPelicula = NULL;
+	Pelicula * pfinPelicula = NULL;
 	//string s = to_string(0)
 	//cout<<s
 	setlocale(LC_CTYPE,"Spanish");
@@ -117,7 +123,7 @@ int main() {
 	do{
 		system("cls");
 		op = menu_principal();
-		operaciones_pr(op,pcabCine, pfinCine, pcabSesion, pfinSesion, pcabSala, pfinSala);
+		operaciones_pr(op,pcabCine, pfinCine, pcabSesion, pfinSesion, pcabSala, pfinSala, pcabPelicula, pfinPelicula);
 		gotoxy(5, 2);cout<<"Desea realizar otra operacion si(1): ";gotoxy(55,2);cin>>op;  
 	}while(op==1);
 	
@@ -153,7 +159,7 @@ int menu_principal(){
 	
 }
 
-void operaciones_pr(int op , Cine *&pcabCine, Cine *& pfinCine,Sesion *& pcabSesion, Sesion *&pfinSesion, Sala*&pcabSala, Sala *&pfinSala){
+void operaciones_pr(int op , Cine *&pcabCine, Cine *& pfinCine,Sesion *& pcabSesion, Sesion *&pfinSesion, Sala*&pcabSala, Sala *&pfinSala,Pelicula *& pcabPelicula,Pelicula *& pfinPelicula){
 	int numb=0;
 	string cine;
 	Cine * act;
@@ -175,6 +181,7 @@ void operaciones_pr(int op , Cine *&pcabCine, Cine *& pfinCine,Sesion *& pcabSes
 			break;
 			
 		case 4: //registra pelicula
+			Registrar_Pelicula(pcabPelicula,pfinPelicula,pcabCine);
 			break;
 		case 5: //visualizar informacion de una sala concreta
 			break;
@@ -386,7 +393,7 @@ void Registrar_Sesion(Sala * pcabsala, Sesion *& pcab, Sesion *&pfin, int numero
 	salaAct->pfinSe = nuevaSesion;
 	
 	
-	Seleccion_Horario(salaAct);
+	Seleccion_Horario(salaAct, nuevaSesion);
 	
 	}else{
 		if(salaAct->Horario1 == true && salaAct->Horario2 == true&&salaAct->Horario3 == true&&salaAct->Horario4 == true){
@@ -395,7 +402,7 @@ void Registrar_Sesion(Sala * pcabsala, Sesion *& pcab, Sesion *&pfin, int numero
 	}	
 }
 
-void Seleccion_Horario(Sala * salaAct){
+void Seleccion_Horario(Sala * salaAct, Sesion * sesionAct){
 	int op;
 	bool verf;
 	do{
@@ -412,7 +419,9 @@ void Seleccion_Horario(Sala * salaAct){
 		switch(op){
 			case 1:
 				if(salaAct->Horario1 != true){
+					sesionAct->hora = "10:30am";
 					salaAct->Horario1 = true;
+					
 					break;
 				}else{
 					verf= true;
@@ -423,6 +432,7 @@ void Seleccion_Horario(Sala * salaAct){
 				
 			case 2:
 				if(salaAct->Horario2 != true){
+					sesionAct->hora = "12:30am";
 					salaAct->Horario2 = true;
 					break;
 				}else{
@@ -432,6 +442,7 @@ void Seleccion_Horario(Sala * salaAct){
 				
 			case 3:
 				if(salaAct->Horario3 != true){
+					sesionAct->hora = "15:00pm";
 					salaAct->Horario3 = true;
 					break;
 				}else{
@@ -441,6 +452,7 @@ void Seleccion_Horario(Sala * salaAct){
 				
 			case 4:
 				if(salaAct->Horario4 != true){
+					sesionAct->hora = "20:00pm";
 					salaAct->Horario4 = true;
 					break;
 				}else{
@@ -455,7 +467,94 @@ void Seleccion_Horario(Sala * salaAct){
 
 // ------------- PELICULA ---------------------------
 
-void 
+void Registrar_Pelicula(Pelicula *&pcabP,Pelicula *&pfinP, Cine * pcabCine){
+	int op;
+	string nombre;
+	
+	system("cls");
+	fflush(stdin);
+	do{
+		gotoxy(5,5); cout<<"1.- Registrar Película";
+		gotoxy(5,7); cout<<"2.- Asignar Película a Sala";
+		gotoxy(5,10); cout<<"Ingrese opcion a elegir |1 - 2|: ";gotoxy(40,10);cin>>op;
+	}while(op<0 || op>2);
+	
+	if (op==1){
+		Pelicula *NuevoNodo=new(Pelicula); //ab001
+		do{
+			fflush(stdin);
+			gotoxy(5, 12);cout<<"Ingrese el Nombre: ";gotoxy(40, 12);getline(cin, NuevoNodo->nombre);	
+		}while(Buscar_Pelicula(NuevoNodo->nombre,pcabP) != NULL);
+		
+		NuevoNodo->ant=NULL;
+		NuevoNodo->sig=NULL;
+		
+		if(pcabP==NULL){ //significa que es el primero
+			pcabP=NuevoNodo;
+		}else{ //ya existe nodo
+			pfinP->sig=NuevoNodo;
+			NuevoNodo->ant=pfinP;
+		}
+		pfinP=NuevoNodo;
+	}else{
+		Sala * salaAct;
+		Cine * cineAct;
+		Pelicula * peliAct;
+		string cine;
+		string peli;
+		int sala;
+		bool Verf;
+	//	string nombre;
+		fflush(stdin);
+		
+		do{
+			gotoxy(35, 14);cout<<("                              ");
+			gotoxy(5, 14);cout<<("Ingrese la Pelicula a asignar: ");gotoxy(35, 14);getline(cin,peli);
+			Verf = verificar_Peli(peli, pcabP);
+		}while(Verf == false);
+		peliAct = Buscar_Pelicula(peli,pcabP);	
+		
+		
+		//pregunta a que cine pertenece y verifica si existe
+		do{
+			gotoxy(35, 16);cout<<("                              ");
+			gotoxy(5, 16);cout<<("Ingrese a que Cine pertenece: ");gotoxy(35, 16);getline(cin,cine);
+			Verf = verificar_Cine(cine, pcabCine);
+		}while(Verf == false);
+		cineAct = buscar_cine(cine,pcabCine);
+		
+		do{
+			gotoxy(35, 18);cout<<("                              ");
+			gotoxy(5, 18);cout<<("Ingrese a que Sala pertenece: ");gotoxy(35, 18);cin>>sala;
+			Verf = verificar_Sala(sala, cineAct->pcabS);
+		}while(Verf == false);
+		salaAct = buscar_sala(cineAct->pcabS, sala);
+		
+		salaAct-> PeliSala = peliAct;
+	}
+}
+	
+Pelicula *Buscar_Pelicula(string datobuscar,Pelicula *pcab){
+	Pelicula *nodoAct=pcab;
+	while(nodoAct!=NULL){
+		if(nodoAct->nombre ==datobuscar){
+			return nodoAct;
+		}
+	    nodoAct=nodoAct->sig;	
+	}
+	
+   return NULL;	
+}
+
+bool verificar_Peli(string nombre, Pelicula *pcab){
+	Pelicula * dirPeli; 
+	dirPeli = Buscar_Pelicula(nombre, pcab);
+	
+	if(dirPeli != NULL){
+		return true;	
+	}
+	return false;
+}
 
 
 
