@@ -28,6 +28,35 @@ void gotoxy(int x,int y){
 	dwPos.Y=y;
 	SetConsoleCursorPosition(hcon,dwPos);
 }
+void cargando( int X, int Y) {
+    const char simbolo = '/';
+
+    int x = X; // Posición inicial en X
+    int y = Y; // Posición inicial en Y
+    int angulo = 0;
+    int segundos = 1;
+
+    for (int tiempo = 0; tiempo < segundos * 1000; tiempo += 100) {
+        gotoxy(x, y);
+        std::cout << simbolo;
+        Sleep(100); // Espera 100 ms
+
+        gotoxy(x, y);
+        std::cout << ' '; // Borra el símbolo
+
+        angulo = (angulo + 1) % 4;
+
+        if (angulo == 0) {
+            x++;
+        } else if (angulo == 1) {
+            y++;
+        } else if (angulo == 2) {
+            x--;
+        } else if (angulo == 3) {
+            y--;
+        }
+    }
+}
 
 //2. Zona para constantes y variables globales
 // structs
@@ -123,8 +152,7 @@ int main() {
 	Pelicula * pcabPelicula = NULL;
 	Pelicula * pfinPelicula = NULL;
 	void busqueda_pelicula(Cine * pcabCine);
-	//string s = to_string(0)
-	//cout<<s
+
 	setlocale(LC_CTYPE,"Spanish");
 	int op;
 	do{
@@ -153,7 +181,7 @@ int menu_principal(){
 		cout<<"> 1. Registrar Cine"<<endl;
 		cout<<"> 2. Registrar Salas"<<endl;
 		cout<<"> 3. Registrar Sesiones"<<endl;
-		cout<<"> 4. Registrar Pelicula"<<endl;
+		cout<<"> 4. Registrar y Asignar Peliculas"<<endl;
 		cout<<"> 5. Visualizar información de Sala Concreta"<<endl;
 		cout<<"> 6. Buscar pelicula"<<endl;
 		cout<<"> 7. Listar peliculas por edades"<<endl;
@@ -243,19 +271,21 @@ void RegistrarCine(Cine*&pcab, Cine*&pfin) {
     Cine* NuevoNodo = new(Cine);
     //NuevoNodo->Nombre = nombre;
 	bool Verf;
-	
+	system("cls");
 	do{
-			system("cls");
+			
 			fflush(stdin);
-			gotoxy(25,8);cout<<"Ingrese el nombre del cine: ";
-			gotoxy(55,8);getline(cin, NuevoNodo->Nombre);
+			gotoxy(25,6);cout<<"Ingrese el nombre del cine: ";
+			gotoxy(55,6);getline(cin, NuevoNodo->Nombre);
 			NuevoNodo->Nombre = trim(NuevoNodo->Nombre);
+			
 			Verf = verificar_Cine(NuevoNodo->Nombre, pcab);
 			if(Verf == true){
-				gotoxy(60,20);cout<<"                    ";
+				gotoxy(55,6);cout<<"                    ";
+				gotoxy(25,8);cout<<"** Cine Ya Existente **";
 			}
 	}while(Verf == true);
-
+	gotoxy(25,8);cout<<"** Cine Registrado con Existo **";
 	NuevoNodo->Salas= 1;	
 	NuevoNodo->pcabS = NULL;
     NuevoNodo->pfinS = NULL;
@@ -295,23 +325,7 @@ bool verificar_Cine(string nombre, Cine *pcab){
 	return false;
 }
 
-/*
-void fun_listar(Cine *pcabProd){ //tipo referencia porque cambiara
-	Cine *ProdAct=pcabProd;
-	
-	while(ProdAct!=NULL){
-		//Presentar los datos
-		cout<<"|>-----------------------------------------------<|"<<endl;
-		cout<<"|>Direccion anterior del Nodo: "<<ProdAct->ant<<endl;
-		cout<<"|>Direccion del Nodo: "<<ProdAct<<endl;
-		cout<<"|>Nombre del cine: "<<ProdAct->Nombre<<endl;
-		cout<<"|>Direccion siguiente del Nodo: "<<ProdAct->sig<<endl;
-		cout<<"|>-----------------------------------------------<|"<<endl;
-		//alterar la condicion o el bucle
-		ProdAct=ProdAct->sig;
-	} 
-}
-*/
+
 // ------------------SALA -------------------------------
 
 void crear_sala(Cine*pcabcine){
@@ -328,6 +342,7 @@ void crear_sala(Cine*pcabcine){
 	do{
 		gotoxy(35, 5);cout<<("                              ");
 		gotoxy(5, 5);cout<<("Ingrese a que Cine pertenece: ");gotoxy(35, 5);getline(cin,cine);
+
 		Verf = verificar_Cine(cine, pcabcine);
 	}while(Verf == false);
 	cineAct = buscar_cine(cine,pcabcine);
@@ -454,11 +469,12 @@ void Seleccion_Horario(Sala * salaAct, Sesion * sesionAct){
 		verf = false;
 		do{
 				fflush(stdin);
-				gotoxy(5, 14);cout<<("1.- Horario 1: 10:30am ");
-				gotoxy(5, 16);cout<<("2.- Horario 2: 12:30pm ");
-				gotoxy(5, 18);cout<<("3.- Horario 3: 15:00pm ");
-				gotoxy(5, 20);cout<<("4.- Horario 4: 20:00pm ");
-				gotoxy(5, 22);cout<<("Ingrese el horario de la sala: ");gotoxy(35, 22);cin>>op;
+				
+				gotoxy(45, 5);cout<<("|");gotoxy(50, 5);cout<<("1.- Horario 1: 10:30am ");
+				gotoxy(45, 7);cout<<("|");gotoxy(50, 7);cout<<("2.- Horario 2: 12:30pm ");
+				gotoxy(45, 9);cout<<("|");gotoxy(50, 9);cout<<("3.- Horario 3: 15:00pm ");
+				gotoxy(45, 11);cout<<("|");gotoxy(50, 11);cout<<("4.- Horario 4: 20:00pm ");
+				gotoxy(50, 13);cout<<("Ingrese el horario de la sala: ");gotoxy(82, 13);cin>>op;
 		}while(op<0 || op>4);
 	
 		switch(op){
@@ -761,8 +777,7 @@ void busqueda_pelicula(Cine * pcabCine, Pelicula * pcabP){
 			
 			
 			listar_sesiones(salaAct->pcabSe, y+3, y);
-			//gotoxy(5, y2+y2);cout<<"sexooooooooooooooooooooooooooooo";
-			//y2+ = 
+
 			salaAct = salaAct->sig;
 			y+=4;
 			}
@@ -785,32 +800,39 @@ void Cartelera(Cine * pcabCine, Pelicula * pcabP){
 	fflush(stdin);
 	Cine *cineAct=pcabCine;
 	Sala * salaAct;
-	int y= 16;
+	int y= 8;
 	//int y2=18;
 	
 	while(cineAct!=NULL){
 		//Presentar los datos
-		gotoxy(5, y);cout<<"Cine: ";gotoxy(15, y);cout<<cineAct->Nombre;
+		gotoxy(5, y);cout<<"Cine >>> ";gotoxy(25, y);cout<<cineAct->Nombre;
 		salaAct = cineAct->pcabS;
 		
 		while(salaAct!=NULL){
+			gotoxy(5, y+2);cout<<"Sala >>>";gotoxy(25, y+2 );cout<<salaAct->numero;
+			if(salaAct->PeliSala){
+				gotoxy(5,y+4);cout<<"Nombre >>> ";gotoxy(25,y+4);cout<<salaAct->PeliSala->nombre; 
+				gotoxy(5,y+6);cout<<"Clasificacion >>> ";gotoxy(25,y+6);cout<<salaAct->PeliSala->clasificacion;
+				gotoxy(5,y+8);cout<<"Protagonistas >>> ";gotoxy(25,y+8);cout<<salaAct->PeliSala->protagonistas;
+			}else{
+				gotoxy(5,y+4);cout<<"Nombre >>> ";gotoxy(25,y+4);cout<<"    "; 
+				gotoxy(5,y+6);cout<<"Clasificacion >>> ";gotoxy(25,y+6);cout<<"    "; 
+				gotoxy(5,y+8);cout<<"Protagonistas >>> ";gotoxy(25,y+8);cout<<"    "; 
+			}
 			
-			gotoxy(5,y+2);cout<<"Nombre: ";gotoxy(35,y+2);cout<<salaAct->PeliSala->nombre; 
-			gotoxy(5,y+4);cout<<"Clasificacion: ";gotoxy(35,y+4);cout<<salaAct->PeliSala->clasificacion;
-			gotoxy(5,y+6);cout<<"Protagonistas: ";gotoxy(35,y+6);cout<<salaAct->PeliSala->protagonistas;
 			
-			gotoxy(5, y+8);cout<<"Sala:";gotoxy(15, y+8 );cout<<salaAct->numero;
+			
 			
 			
 			listar_sesiones(salaAct->pcabSe, y+10, y);
 			//gotoxy(5, y2+y2);cout<<"sexooooooooooooooooooooooooooooo";
 			//y2+ = 
 			salaAct = salaAct->sig;
-			y+=4;
+			y+=8;
 		}
 		
 		
-		y +=4 ;
+		y +=5 ;
 		cineAct=cineAct->sig;
 	} 
 }
@@ -823,41 +845,42 @@ void pelis_edades(Pelicula * pcab, Cine * pcabCine){
 	Cine *cineAct=pcabCine;
 	Sala * salaAct;
 	menu_pelis();
-	gotoxy(5, 15);cout<<"Ingrese la clasificacion a buscar: ";gotoxy(40, 15);cin>>clasi;
-	int y = 18;
+	gotoxy(5, 5);cout<<"Ingrese la clasificacion a buscar: ";gotoxy(40, 5);cin>>clasi;
+	int y = 8;
 	clasi= trim(clasi);
 	
 	if(clasi!="TP" and clasi!="M15" and clasi!="M18" and clasi!="IFN"){
 		gotoxy(5, 17);cout<<"No existe esta clasificacion";
 	}else{
+		system("cls");
 		Pelicula *nodoAct=pcab;
 		while(nodoAct!=NULL){
 			if(nodoAct->clasificacion == clasi){
-				gotoxy(5,y+2);cout<<"Nombre: ";gotoxy(35,y+2);cout<<peliAct->nombre; 
-				gotoxy(5,y+4);cout<<"Clasificacion: ";gotoxy(35,y+4);cout<<peliAct->clasificacion;
-				gotoxy(5,y+6);cout<<"Protagonistas: ";gotoxy(35,y+6);cout<<peliAct->protagonistas;
+				gotoxy(5,y+2);cout<<"Nombre >>> ";gotoxy(35,y+2);cout<<peliAct->nombre; 
+				gotoxy(5,y+4);cout<<"Clasificacion >>> ";gotoxy(35,y+4);cout<<peliAct->clasificacion;
+				gotoxy(5,y+6);cout<<"Protagonistas >>> ";gotoxy(35,y+6);cout<<peliAct->protagonistas;
 				//return nodoAct;
 				while(cineAct!=NULL){
 				//Presentar los datos
-				gotoxy(5, y);cout<<"Cine: ";gotoxy(15, y);cout<<cineAct->Nombre;
+				gotoxy(5, y);cout<<"Cine >>> ";gotoxy(15, y);cout<<cineAct->Nombre;
 				salaAct = cineAct->pcabS;
 					
 					while(salaAct!=NULL){
 						
 						
 						
-						gotoxy(5, y+8);cout<<"Sala:";gotoxy(15, y+8 );cout<<salaAct->numero;
+						gotoxy(5, y+8);cout<<"Sala >>>";gotoxy(15, y+8 );cout<<salaAct->numero;
 						
 						
 						listar_sesiones(salaAct->pcabSe, y+10, y);
 						
 						//y2+ = 
 						salaAct = salaAct->sig;
-						y+=4;
+						y+=8;
 					}
 				
 				
-				y +=4 ;
+				y +=5 ;
 				cineAct=cineAct->sig;
 			} 
 				
@@ -869,17 +892,17 @@ void pelis_edades(Pelicula * pcab, Cine * pcabCine){
 		
 	   //return NULL;	
 	}
-	}
-			
-			
+	}	
 	
 void menu_pelis(){
 	
-	gotoxy(5,5);cout<<" -------- Elija una Clasificacion: ---------";
-	gotoxy(5,7);cout<<">> TP";
-	gotoxy(5,9);cout<<">> M15";
-	gotoxy(5,11);cout<<">> M18";
-	gotoxy(5,13);cout<<">> IFN";
+	gotoxy(50,5);cout<<" -------- Elija una Clasificacion: ---------";
+	gotoxy(50,7);cout<<">> Si busca para Todo Publico Escriba   | TP  | ";
+	gotoxy(50,9);cout<<">> Si busca para Mayores de 15 Escriba  | M15 | ";
+	gotoxy(50,11);cout<<">> Si busca para Mayores de 18 Escriba  | M18 |";
+	gotoxy(50,13);cout<<">> Si busca Infantiles Escriba          | IFN |";
 	
 }
+
+
 
