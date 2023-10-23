@@ -222,8 +222,17 @@ void operaciones_pr(int op , Cine *&pcabCine, Cine *& pfinCine,Pelicula *& pcabP
 			Cartelera(pcabCine, pcabPelicula);
 			break;
 		case 9: //salir del programa
-			exit(0);
-			break;
+			char conf;
+                cout << "¿Está seguro de salir (S/N)? ";cin >> conf;
+                if (conf == 'S' || conf == 's') {
+
+                    cout << "Saliendo del programa..." << endl;
+                    exit(0);
+                }else{
+                	break;
+				}
+			
+			
 	}
 }
 
@@ -824,6 +833,9 @@ void pelis_edades(Pelicula * pcab, Cine * pcabCine){
 		Pelicula *nodoAct=pcab;
 		while(nodoAct!=NULL){
 			if(nodoAct->clasificacion == clasi){
+				gotoxy(5,y+2);cout<<"Nombre: ";gotoxy(35,y+2);cout<<peliAct->nombre; 
+				gotoxy(5,y+4);cout<<"Clasificacion: ";gotoxy(35,y+4);cout<<peliAct->clasificacion;
+				gotoxy(5,y+6);cout<<"Protagonistas: ";gotoxy(35,y+6);cout<<peliAct->protagonistas;
 				//return nodoAct;
 				while(cineAct!=NULL){
 				//Presentar los datos
@@ -832,15 +844,13 @@ void pelis_edades(Pelicula * pcab, Cine * pcabCine){
 					
 					while(salaAct!=NULL){
 						
-						gotoxy(5,y+2);cout<<"Nombre: ";gotoxy(35,y+2);cout<<peliAct->nombre; 
-						gotoxy(5,y+4);cout<<"Clasificacion: ";gotoxy(35,y+4);cout<<peliAct->clasificacion;
-						gotoxy(5,y+6);cout<<"Protagonistas: ";gotoxy(35,y+6);cout<<peliAct->protagonistas;
+						
 						
 						gotoxy(5, y+8);cout<<"Sala:";gotoxy(15, y+8 );cout<<salaAct->numero;
 						
 						
 						listar_sesiones(salaAct->pcabSe, y+10, y);
-						//gotoxy(5, y2+y2);cout<<"sexooooooooooooooooooooooooooooo";
+						
 						//y2+ = 
 						salaAct = salaAct->sig;
 						y+=4;
@@ -863,64 +873,6 @@ void pelis_edades(Pelicula * pcab, Cine * pcabCine){
 			
 			
 	
-	
-	
-	
-	/*
-	gotoxy(5,y);cout<<"Clasificacion: TP";
-	y+=2;
-	while(peliAct!=NULL){
-		if(peliAct->clasificacion=="TP"){
-			gotoxy(5,y);cout<<"Pelicula: ";
-			gotoxy(15,y);cout<<peliAct->nombre;
-			y+=2;
-			gotoxy(5,y);cout<<"Protagonistas: ";
-			gotoxy(15,y);cout<<peliAct->protagonistas;
-		}
-		peliAct=peliAct->sig;	
-	}
-	*/
-//	y+=2;
-	/*
-	gotoxy(5,y);cout<<"Clasificacion: M15";
-	while(peliAct!=NULL){
-		if(peliAct->clasificacion=="M15"){
-			gotoxy(15,y);cout<<peliAct->nombre;
-			y+=2;
-		}
-		peliAct=peliAct->sig;	
-	}
-	y+=2;
-	
-	gotoxy(5,y);cout<<"Clasificacion: M18";
-	while(peliAct!=NULL){
-		if(peliAct->clasificacion=="M18"){
-			gotoxy(15,y);cout<<peliAct->nombre;
-			y+=2;
-		}
-		peliAct=peliAct->sig;	
-	}
-	y+=2;
-	gotoxy(5,y);cout<<"Clasificacion: IFN";
-	while(peliAct!=NULL){
-		if(peliAct->clasificacion=="IFN"){
-			gotoxy(15,y);cout<<peliAct->nombre;
-			y+=2;
-		}
-		peliAct=peliAct->sig;	
-	}
-	y+=2;
-	*/
-	
-
-
-/*
-Todo Publico > TP ");
-		gotoxy(5, 16);cout<<("2.- Mayores de 15 > M15 ");
-		gotoxy(5, 18);cout<<("3.- Mayores de 18 > N18 ");
-		gotoxy(5, 20);cout<<("4.- Infantil > IFN");
-*/
-
 void menu_pelis(){
 	
 	gotoxy(5,5);cout<<" -------- Elija una Clasificacion: ---------";
