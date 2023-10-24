@@ -28,35 +28,6 @@ void gotoxy(int x,int y){
 	dwPos.Y=y;
 	SetConsoleCursorPosition(hcon,dwPos);
 }
-void cargando( int X, int Y) {
-    const char simbolo = '/';
-
-    int x = X; // Posición inicial en X
-    int y = Y; // Posición inicial en Y
-    int angulo = 0;
-    int segundos = 1;
-
-    for (int tiempo = 0; tiempo < segundos * 1000; tiempo += 100) {
-        gotoxy(x, y);
-        std::cout << simbolo;
-        Sleep(100); // Espera 100 ms
-
-        gotoxy(x, y);
-        std::cout << ' '; // Borra el símbolo
-
-        angulo = (angulo + 1) % 4;
-
-        if (angulo == 0) {
-            x++;
-        } else if (angulo == 1) {
-            y++;
-        } else if (angulo == 2) {
-            x--;
-        } else if (angulo == 3) {
-            y--;
-        }
-    }
-}
 
 //2. Zona para constantes y variables globales
 // structs
@@ -83,7 +54,6 @@ struct Sesion{
 	Sesion * sig;
 };
 struct Sala {
-    //string Nombre;
     int numero;
     int Sesiones;
     bool Horario1;
@@ -285,7 +255,7 @@ void RegistrarCine(Cine*&pcab, Cine*&pfin) {
 				gotoxy(25,8);cout<<"** Cine Ya Existente **";
 			}
 	}while(Verf == true);
-	gotoxy(25,8);cout<<"** Cine Registrado con Existo **";
+	gotoxy(25,8);cout<<"** Cine Registrado con Exito **";
 	NuevoNodo->Salas= 1;	
 	NuevoNodo->pcabS = NULL;
     NuevoNodo->pfinS = NULL;
